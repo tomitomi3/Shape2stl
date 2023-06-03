@@ -1,8 +1,8 @@
-<img src="image\image_shape2stl.PNG" width=30%>
+<img src="image\image_shape2stl.PNG">
 
 # Shape2stl
 
-This Python code reads polygons from a shapefile, converts them to 3D, and converts them to an STL file. I created it for the purpose of making a Japanese city puzzle.
+This Python code reads polygons from a shapefile, converts them to 3D, and converts them to an STL file. I created this python code for the purpose of making a Japanese city puzzle.
 
 ## usage
 
