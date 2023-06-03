@@ -177,7 +177,7 @@ if __name__ == "__main__":
         # 17, 851, 穴水町
         # 18, 852, 能登町
         shapefilePath = "japan_ver84.shp"
-        shapeIndex = 835
+        shapeIndex = 834
         scaleFactor = 2000  # japan_ver84を最大長2000mmとする
         zOffset = 5
         print("debug")
