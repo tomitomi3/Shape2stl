@@ -1,18 +1,18 @@
 import sys
 import geopandas as gpd
-import numpy as np
-import pyvista as pv
 import mapbox_earcut as earcut
+import numpy as np
+import pymeshfix
+import pyvista as pv
+import trimesh
 from stl import mesh
 from shapely import geometry
+from trimesh.exchange.stl import export_stl_ascii
 
 # 一時STLファイル
 TEMP_STL_FILE = "output.stl"
 
-def GetPolygons(shapeData, scaleFactor):
-    # ポリゴンの形状を取得
-    polygons = shapeData.geometry.values
-
+def NormalizePolygons(polygons, scaleFactor):
     # 飛び地対策、MultiPolygonの対策 面積が大きいものを採用する
     tgtPolygons = []
     for polygon in polygons:
@@ -70,17 +70,15 @@ def GetPolygons(shapeData, scaleFactor):
 
     return scaledPolygons
 
-def GenerateSTL(scaledPolygons, shapeIndex, thickness):
+def CreateAndSaveSTL(scaledPolygons, shapeIndex, thickness):
     # 頂点情報
     x, y = scaledPolygons[shapeIndex].exterior.xy
 
-    # XとY座標の最小値と最大値を取得
+    # 目安サイズ 外接する矩形サイズを出力
     x_min = np.min(x)
     x_max = np.max(x)
     y_min = np.min(y)
     y_max = np.max(y)
-
-    # 目安サイズ 外接する矩形サイズを出力
     rectangle_width = x_max - x_min
     rectangle_height = y_max - y_min
     print(f"width: {rectangle_width} mm, height: {rectangle_height} mm")
@@ -131,12 +129,12 @@ def GenerateSTL(scaledPolygons, shapeIndex, thickness):
         for j in range(3):
             polygon_mesh.vectors[i][j] = vertices[f[j], :]
 
-    # STLファイルに出力＆クリーニング
+    # STLファイル出力
     polygon_mesh.save(TEMP_STL_FILE)
-    readStl = pv.read(TEMP_STL_FILE)
-    cleanedMesh = readStl.clean(tolerance=1e-6)
-    cleanedMesh.save(TEMP_STL_FILE, binary=False)
-
+    
+    # 修復
+    CleanSTL()
+    
 def ViewSTL():
     # STLファイルの読み込み
     tempMesh = pv.read(TEMP_STL_FILE)
@@ -145,7 +143,24 @@ def ViewSTL():
     p = pv.Plotter()
     p.add_axes()
     p.add_mesh(tempMesh)
+    p.add_mesh(tempMesh, style='wireframe', color='black')
     p.show()
+
+def CleanSTL():
+    # 比較用に出力
+    readMeshPyVista = pv.read(TEMP_STL_FILE)
+    readMeshPyVista.save("output_raw.stl", binary=False)
+    
+    # メッシュの不整合を修復
+    loadMesh = trimesh.load_mesh(TEMP_STL_FILE)
+    
+    # メッシュの法線が外を向いているかなど fix_winding, fix_inversionが実行
+    trimesh.repair.fix_normals(loadMesh)
+    with open(TEMP_STL_FILE, 'w') as f:
+        f.write(export_stl_ascii(loadMesh))  # 比較用にASCII形式で出力
+
+    # pymeshfixで修復
+    pymeshfix.clean_from_file(TEMP_STL_FILE, TEMP_STL_FILE)
 
 if __name__ == "__main__":
     if len(sys.argv) == 5:
@@ -183,7 +198,8 @@ if __name__ == "__main__":
         print("debug")
 
     # shape to stl
-    shapeData = gpd.read_file(shapefilePath)
-    scaledPolygons = GetPolygons(shapeData, scaleFactor)
-    GenerateSTL(scaledPolygons, shapeIndex, zOffset)
+    shapeData = gpd.read_file(shapefilePath)    
+    polygons = shapeData.geometry.values
+    scaledPolygons = NormalizePolygons(polygons, scaleFactor)
+    CreateAndSaveSTL(scaledPolygons, shapeIndex, zOffset)
     ViewSTL()
