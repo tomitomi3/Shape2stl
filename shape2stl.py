@@ -171,35 +171,22 @@ if __name__ == "__main__":
         print("exist arguments")
     else:
         # debug
-        # ESRI 市区町村 japan_ver84.shp
-        # 0, 834, 金沢市
-        # 1, 835, 七尾市
-        # 2, 836, 小松市
-        # 3, 837, 輪島市
-        # 4, 838, 珠洲市
-        # 5, 839, 加賀市
-        # 6, 840, 羽咋市
-        # 7, 841, かほく市
-        # 8, 842, 白山市
-        # 9, 843, 能美市
-        # 10, 844, 野々市市
-        # 11, 845, 川北町
-        # 12, 846, 津幡町
-        # 13, 847, 内灘町
-        # 14, 848, 志賀町
-        # 15, 849, 宝達志水町
-        # 16, 850, 中能登町
-        # 17, 851, 穴水町
-        # 18, 852, 能登町
-        shapefilePath = "japan_ver84.shp"
-        shapeIndex = 834
-        scaleFactor = 2000  # japan_ver84を最大長2000mmとする
+        # 国土数値情報 行政区域データ https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v3_1.html (accessed 2023.06.06)
+        shapefilePath = r".\N03-20230101_17_GML\N03-23_17_230101.shp" 
+        shapeIndex = 0
+        scaleFactor = 200  # 読み込んだShapeの全体長を決める
         zOffset = 5
         print("debug")
 
-    # shape to stl
-    shapeData = gpd.read_file(shapefilePath)    
-    polygons = shapeData.geometry.values
+    # shape to stl    
+    shapeData = gpd.read_file(shapefilePath, encoding='cp932')
+
+    # 国土数値情報 行政区域データを使う場合 行政区域コードでディゾルブしてポリゴンをマージ
+    shapeDataDissolved = shapeData.dissolve(by='N03_007')
+    # shapeDataDissolved.to_file("output.shp")  # 保存
+    print(shapeDataDissolved["N03_004"])  # 市区町村名列
+    
+    polygons = shapeDataDissolved.geometry.values
     scaledPolygons = NormalizePolygons(polygons, scaleFactor)
     CreateAndSaveSTL(scaledPolygons, shapeIndex, zOffset)
     ViewSTL()
