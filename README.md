@@ -1,8 +1,9 @@
-<img src="image\image_shape2stl.PNG" width="70%">
+<img src="image\print_ref_ishikawa_stl.jpg" width="70%">
 
 Converting Japanese Kanazawa city boundaries to STL file.
-This is based on ESRI Japan 全国市区町村データ.
-https://www.esrij.com/products/japan-shp/
+
+国土数値情報 行政区域　第2.3版 を使用しています。
+https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_3.html
 
 # Shape2stl
 
@@ -25,6 +26,6 @@ Shapeファイルからポリゴン抽出を行い、Z方向に押し出して�
 
 ## Example using this code
 
-金沢市と津幡町
+Map puzzle from shapefile of Ishikawa Prefecture.
 
-<img src="image\print_kanazawa_tsubata.JPG" width="30%">
+<img src="image\print_ref_ishikawa_stl.JPG" width="30%">
