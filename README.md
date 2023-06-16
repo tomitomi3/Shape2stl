@@ -1,9 +1,6 @@
-<img src="image\print_ref_ishikawa_stl.jpg" width="70%">
+<img src="image\image_shape2stl.PNG" width="30%">
 
-Converting Japanese Kanazawa city boundaries to STL file.
-
-国土数値情報 行政区域　第2.3版 を使用しています。
-https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_3.html
+[国土数値情報 行政区域　第2.3版](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_3.html)を使用しています。
 
 # Shape2stl
 
@@ -28,4 +25,4 @@ Shapeファイルからポリゴン抽出を行い、Z方向に押し出して�
 
 Map puzzle from shapefile of Ishikawa Prefecture.
 
-<img src="image\print_ref_ishikawa_stl.JPG" width="30%">
+<img src="image\print_ref_ishikawa_stl.JPG" width="50%">
