@@ -1,6 +1,6 @@
 <img src="image\image_shape2stl.PNG" width="30%">
 
-[国土数値情報 行政区域　第2.3版](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_3.html)を使用しています。
+* [国土数値情報 行政区域 第3.1版](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v3_1.html)を使用しています。
 
 # Shape2stl
 
